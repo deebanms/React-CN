@@ -1,0 +1,29 @@
+/* Write code for your CSS here */
+
+body {
+  margin: 0;
+  padding-left: 50px;
+  padding-top: 50px;
+}
+
+ul {
+  list-style-type: none;
+  display: flex;
+  gap: 2rem;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding: 0.5rem;
+  background-color: rgb(10, 186, 255);
+  border-radius: 0.2rem;
+}
+
+.hero {
+  margin-bottom: 25px;
+}
+
+.about {
+  margin-top: 25px;
+}
