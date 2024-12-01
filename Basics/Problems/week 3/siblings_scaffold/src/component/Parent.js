@@ -35,7 +35,7 @@ class SiblingB extends Component {
 }
 
 // Parent Component
-export default class Parent extends Component {
+class Parent extends Component {
   state = {
     /* TODO: Initialize state */
     name: "",
@@ -58,3 +58,5 @@ export default class Parent extends Component {
     );
   }
 }
+
+export default Parent;
