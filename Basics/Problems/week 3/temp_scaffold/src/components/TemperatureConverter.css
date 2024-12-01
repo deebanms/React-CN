@@ -1,0 +1,17 @@
+.temperature-converter {
+    text-align: center;
+    margin: 20px;
+  }
+  
+  label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+  }
+  
+  input {
+    width: 150px;
+    padding: 5px;
+    margin-left: 10px;
+  }
+  
