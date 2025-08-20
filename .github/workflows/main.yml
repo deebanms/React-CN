@@ -1,0 +1,32 @@
+name: Mirror Repository
+
+on:
+  push:
+    branches: ['**']
+    tags: ['**']
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Important: get all branches and tags
+
+      - name: Push mirror to destination
+        env:
+          MIRROR_TOKEN: ${{ secrets.Mirror_Token }}
+        run: |
+          # Replace this with your destination repo
+          DEST_REPO="github.com/cloudhostingky-alt/sms-node.git"
+
+          # Add destination as a remote
+          git remote add mirror https://x-access-token:${Mirror_Token}@${DEST_REPO}
+
+          # Fetch all refs just to be sure
+          git fetch --all --tags
+
+          # Mirror push (branches + tags)
+          git push --mirror mirror
