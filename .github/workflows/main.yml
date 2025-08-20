@@ -13,20 +13,20 @@ jobs:
       - name: Checkout full history
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Important: get all branches and tags
+          fetch-depth: 0   # Important: fetch all history + tags
 
       - name: Push mirror to destination
         env:
           MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
         run: |
-          # Replace this with your destination repo
+          # Destination repo (⚠️ no trailing slash)
           DEST_REPO="github.com/cloudhostingky-alt/sms-node.git"
 
-          # Add destination as a remote
+          # Add destination as a remote using token
           git remote add mirror https://x-access-token:${MIRROR_TOKEN}@${DEST_REPO}
 
-          # Fetch all refs just to be sure
+          # Fetch all refs
           git fetch --all --tags
 
-          # Mirror push (branches + tags)
+          # Push everything (branches + tags) to mirror
           git push --mirror mirror
