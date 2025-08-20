@@ -17,10 +17,10 @@ jobs:
 
       - name: Push mirror to destination
         env:
-          MIRROR_TOKEN: ${{secrets.MIRROR_TOKEN}}
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
         run: |
           # Replace this with your destination repo
-          DEST_REPO="github.com/cloudhostingky-alt/sms-node.git"
+          DEST_REPO="https://github.com/cloudhostingky-alt/sms-node.git"
 
           # Add destination as a remote
           git remote add mirror https://x-access-token:${MIRROR_TOKEN}@${DEST_REPO}
