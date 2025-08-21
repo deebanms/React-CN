@@ -1,0 +1,23 @@
+name: Mirror Repo
+
+on:
+  push:
+    branches:
+      - main   # or your default branch
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Add destination remote
+        run: |
+          git remote add mirror https://x-access-token:${{ secrets.DEST_REPO_TOKEN }}@github.com/cloudhostingky-alt/React-CN.git
+
+      - name: Push to destination
+        run: |
+          git push --mirror mirror
