@@ -1,0 +1,38 @@
+name: Sync to Private Repo
+
+on:
+  push:
+    branches:
+      - main   # trigger only when pushing to main branch
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout source repo (this repo)
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history (needed for clean overwrite)
+
+      # 2. Configure Git identity
+      - name: Set Git identity
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      # 3. Remove Git history (so collaborators & commits won't show)
+      - name: Reset repository history
+        run: |
+          rm -rf .git
+          git init
+          git add .
+          git commit -m "Sync code from source repo"
+
+      # 4. Push to destination repo using PAT
+      - name: Push to destination
+        run: |
+          git branch -M main
+          git remote add dest https://x-access-token:${{ secrets.DEST_PAT }}@github.com/cloudhostingky-alt/React-CN.git
+          git push --force --set-upstream dest main
