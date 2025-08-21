@@ -1,0 +1,33 @@
+name: Sync Public to Private (No History)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git (bot identity)
+        run: |
+          git config --global user.email "cloudhosting[bot]@users.noreply.github.com"
+          git config --global user.name "cloudhosting[bot]"
+
+      - name: Remove all history & start fresh
+        run: |
+          rm -rf .git
+          git init
+          git add .
+          git commit -m "Sync code from source repo"
+
+      - name: Force push to destination repo
+        run: |
+          git branch -M main
+          git remote add dest https://x-access-token:${{ secrets.DEST_PAT }}@github.com/cloudhostingky-alt/React-CN.git
+          git push --force --set-upstream dest main
