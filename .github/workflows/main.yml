@@ -1,33 +1,41 @@
-name: Sync Public to Private (No History)
+name: Sync to Private Repo
 
 on:
   push:
     branches:
-      - main
+      - main   # Trigger only when pushing to main branch
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout source (full history)
+      # 1. Checkout source repo (this repo)
+      - name: Checkout source
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # Fetch full history (needed for clean overwrite)
 
-      - name: Set up Git (bot identity)
+      # 2. Configure Git identity
+      - name: Set Git identity
         run: |
-          git config --global user.email "cloudhosting[bot]@users.noreply.github.com"
-          git config --global user.name "cloudhosting[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
-      - name: Remove all history & start fresh
+      # 3. Remove Git history and exclude workflow files
+      - name: Reset repository history excluding workflows
         run: |
           rm -rf .git
           git init
           git add .
-          git commit -m "Sync code from source repo"
+          git rm --cached -r .github/workflows/
+          git commit -m "Sync code from source repo without workflows"
 
-      - name: Force push to destination repo
+      # 4. Push to destination repo using PAT
+      - name: Push to destination
+        env:
+          DEST_PAT: ${{ secrets.DEST_PAT }}
         run: |
           git branch -M main
-          git remote add dest https://x-access-token:${{ secrets.DEST_PAT }}@github.com/cloudhostingky-alt/React-CN.git
+          git remote add dest https://x-access-token:${DEST_PAT}@github.com/cloudhostingky-alt/React-CN.git
           git push --force --set-upstream dest main
