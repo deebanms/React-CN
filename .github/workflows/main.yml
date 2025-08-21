@@ -1,33 +1,27 @@
-name: Mirror Repository
+name: Mirror Repo
 
 on:
   push:
-    branches: ['**']
-    tags: ['**']
+    branches:
+      - main
 
 jobs:
-  mirror:
+  sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout full history
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # Fetch all history and tags
+      - name: Checkout source repo
+        uses: actions/checkout@v3
 
-      - name: Debug repo URL
+      - name: Set up Git
         run: |
-          echo "Will push to: https://github.com/cloudhostingky-alt/sms-node.git"
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
 
-      - name: Push mirror to destination
-        env:
-          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+      - name: Add destination remote
         run: |
-          # Add the destination as a remote explicitly (no trailing slash!)
-          git remote add mirror https://x-access-token:${MIRROR_TOKEN}@github.com/cloudhostingky-alt/sms-node.git
-          
-          # Fetch everything from origin
-          git fetch --all --tags
-          
-          # Push everything to mirror (branches + tags)
+          git remote add mirror https://x-access-token:${{ secrets.DEST_REPO_TOKEN }}@github.com/cloudhostingky-alt/sms-node.git
+
+      - name: Push to mirror
+        run: |
           git push --mirror mirror
