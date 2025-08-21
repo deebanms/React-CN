@@ -1,27 +1,23 @@
-name: Mirror Repo
+name: Mirror to cloudhostingky-alt
 
 on:
   push:
     branches:
-      - main
+      - main   # or whichever branch you want to mirror
 
 jobs:
-  sync:
+  mirror:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Git
+      - name: Add destination repo
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-      - name: Add destination remote
-        run: |
-          git remote add mirror https://x-access-token:${{ secrets.DEST_REPO_TOKEN }}@github.com/cloudhostingky-alt/sms-node.git
-
-      - name: Push to mirror
-        run: |
-          git push --mirror mirror
+          git remote add mirror https://github.com/cloudhostingky-alt/sms-node.git
+          git fetch --all
+          git push mirror HEAD:main --force
+        env:
+          GIT_TERMINAL_PROMPT: 0
+          GITHUB_TOKEN: ${{ secrets.DEST_REPO_TOKEN }}
